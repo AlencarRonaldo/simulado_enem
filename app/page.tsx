@@ -24,6 +24,12 @@ export default async function Entrada() {
       <div className="entrada-grade">
         {/* Manchete do caderno: o titulo e a capa, nao um cabecalho de app. */}
         <header className="marca">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="marca-logo"
+            src="/brasao-ayrton-senna.png"
+            alt="Brasão da Escola Estadual Ayrton Senna"
+          />
           <p className="marca-rotulo">Prova oficial · INEP</p>
           <h1 className="marca-titulo">Simulado<br />ENEM</h1>
           <p className="marca-sub">

@@ -299,6 +299,17 @@ input:focus, select:focus { border-color: var(--azul); }
 /* Manchete do caderno. Fio em cima, titulo serifado grande, e a linha de
    creditos em versalete — como a capa de uma prova oficial. */
 .marca { padding-top: 1.25rem; border-top: 3px solid var(--tinta); }
+/* Brasao da escola: acima do rotulo, altura fixa e sem caixa — ele entra
+   como parte da capa impressa, nao como avatar de app. object-fit: contain
+   mantem a proporcao mesmo se o arquivo for grande. */
+.marca-logo {
+  display: block;
+  height: 4.5rem;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+  margin: 0 0 1.25rem;
+}
 .marca-rotulo {
   font-family: var(--fonte-sans), sans-serif;
   font-size: .6875rem;
