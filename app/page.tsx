@@ -1,4 +1,5 @@
 import { q } from '@/lib/db';
+import { AvisoInicial } from './AvisoInicial';
 import { FormularioEntrada, type SimuladoAberto } from './FormularioEntrada';
 
 export const dynamic = 'force-dynamic';
@@ -21,6 +22,7 @@ export default async function Entrada() {
 
   return (
     <main className="entrada-tela">
+      <AvisoInicial />
       <div className="entrada-grade">
         {/* Manchete do caderno: o titulo e a capa, nao um cabecalho de app. */}
         <header className="marca">

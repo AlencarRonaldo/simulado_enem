@@ -920,3 +920,51 @@ tr.total td { border-top: 1px solid var(--tinta); border-bottom: 0; font-weight:
   border-radius: var(--raio);
   border: 1px solid var(--linha);
 }
+
+/* ------------------------------------------------------------------ modal */
+/* Aviso inicial da entrada: mesma gramatica do resto — fio, serifa, papel.
+   Sem sombra pesada: o overlay escurece o fundo e o modal e uma folha de
+   papel com borda de tinta. */
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(17, 17, 17, .55);
+}
+.modal {
+  width: 100%;
+  max-width: 24rem;
+  background: var(--papel);
+  border: 1px solid var(--tinta);
+  border-radius: var(--raio);
+  padding: 2rem 1.75rem 1.75rem;
+  text-align: left;
+}
+.modal-logo {
+  display: block;
+  height: 5.5rem;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+  margin: 0 0 1.25rem;
+}
+.modal-titulo {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 .875rem;
+}
+.modal-texto {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: .9375rem;
+  line-height: 1.6;
+  color: var(--tinta-media);
+  margin: 0 0 1.5rem;
+}
+.modal-texto strong { color: var(--tinta); font-weight: 600; }
+.modal .botao-principal { width: 100%; }
