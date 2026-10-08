@@ -32,7 +32,10 @@ export function Login() {
   }
 
   return (
-    <form className="folha-papel cartao" onSubmit={entrar}>
+    /* Sem moldura de cartao: mesmo padrao da entrada do aluno — a coluna da
+       direita e separada por um fio (feito no CSS). */
+    <form className="formulario" onSubmit={entrar}>
+      <p className="campos-legenda">Senha do painel</p>
       <label className="campo">
         <span>Senha</span>
         <input

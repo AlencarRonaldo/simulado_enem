@@ -26,9 +26,8 @@ export default async function PaginaRelatorio({ params }: { params: Promise<{ id
       <header className="prof-cabeca">
         <div style={{ flex: 1 }}>
           <h1>{simulado.titulo}</h1>
-          <p className="nota" style={{ margin: 0 }}>
-            {simulado.questoes} questões · {simulado.duracao_min} min ·{' '}
-            {alunos.length} {alunos.length === 1 ? 'aluno' : 'alunos'} ({concluidos} concluíram)
+          <p className="prof-sub">
+            {simulado.questoes} questões · {simulado.duracao_min} min
           </p>
         </div>
         <a className="botao" href={`/api/professor/csv/${id}`}>Baixar notas (CSV)</a>
@@ -36,19 +35,44 @@ export default async function PaginaRelatorio({ params }: { params: Promise<{ id
       </header>
 
       {alunos.length === 0 ? (
-        <div className="folha-papel cartao">
-          <h2>Ninguém fez este simulado ainda</h2>
-          <p className="nota" style={{ margin: 0 }}>
+        <div className="cabeca-secao" style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--linha)' }}>
+          <h2 className="cabeca-titulo">Ninguém fez este simulado ainda</h2>
+          <p className="nota cabeca-nota">
             Os resultados aparecem aqui conforme os alunos respondem — não precisa
             esperar todos terminarem.
           </p>
         </div>
       ) : (
         <>
+          {/* Placar da turma: cifras separadas por fio, sem cartao em volta. */}
+          <div className="faixa-numeros">
+            <span className="faixa-cifra">
+              <b className="faixa-valor">{alunos.length}</b>
+              <span className="faixa-rotulo">{alunos.length === 1 ? 'aluno' : 'alunos'}</span>
+            </span>
+            <span className="faixa-cifra">
+              <b className="faixa-valor">{concluidos}</b>
+              <span className="faixa-rotulo">concluíram</span>
+            </span>
+            <span className="faixa-cifra">
+              <b className="faixa-valor">
+                {pct(alunos.reduce((s, a) => s + (a.percentual ?? 0), 0) / alunos.length)}
+              </b>
+              <span className="faixa-rotulo">média de acerto</span>
+            </span>
+          </div>
+
           {/* -------------------------------------------------- por area */}
           <section className="secao">
-            <h2 className="secao-titulo">Acerto da turma por área</h2>
-            <div className="folha-papel" style={{ padding: '.25rem .75rem' }}>
+            <div className="cabeca-secao">
+              <span className="cabeca-numeral">I</span>
+              <h2 className="cabeca-titulo">Acerto da turma por área</h2>
+              <p className="nota cabeca-nota">
+                Percentual calculado sobre as questões respondidas, não sobre o total —
+                questão em branco não conta como erro aqui.
+              </p>
+            </div>
+            <div className="tabela-rolagem">
               <table>
                 <thead>
                   <tr>
@@ -76,17 +100,16 @@ export default async function PaginaRelatorio({ params }: { params: Promise<{ id
                 </tbody>
               </table>
             </div>
-            <p className="nota" style={{ marginTop: '.5rem' }}>
-              Percentual calculado sobre as questões respondidas, não sobre o total —
-              questão em branco não conta como erro aqui.
-            </p>
           </section>
 
           {/* --------------------------------------------------- por sala */}
           {por_sala.length > 1 && (
             <section className="secao">
-              <h2 className="secao-titulo">Por sala</h2>
-              <div className="folha-papel" style={{ padding: '.25rem .75rem' }}>
+              <div className="cabeca-secao">
+                <span className="cabeca-numeral">II</span>
+                <h2 className="cabeca-titulo">Por sala</h2>
+              </div>
+              <div className="tabela-rolagem">
                 <table>
                   <thead>
                     <tr>
@@ -117,8 +140,16 @@ export default async function PaginaRelatorio({ params }: { params: Promise<{ id
 
           {/* ------------------------------------------- questoes erradas */}
           <section className="secao">
-            <h2 className="secao-titulo">Questões que a turma mais errou</h2>
-            <div className="folha-papel tabela-rolagem" style={{ padding: '.25rem .75rem' }}>
+            <div className="cabeca-secao">
+              <span className="cabeca-numeral">III</span>
+              <h2 className="cabeca-titulo">Questões que a turma mais errou</h2>
+              <p className="nota cabeca-nota">
+                Em verde o gabarito, em vermelho a alternativa que a turma escolheu mais.
+                Quando as duas não coincidem, a turma inteira errou do mesmo jeito — é aí
+                que vale voltar o conteúdo.
+              </p>
+            </div>
+            <div className="tabela-rolagem">
               <table>
                 <thead>
                   <tr>
@@ -171,17 +202,15 @@ export default async function PaginaRelatorio({ params }: { params: Promise<{ id
                 </tbody>
               </table>
             </div>
-            <p className="nota" style={{ marginTop: '.5rem' }}>
-              Em verde o gabarito, em vermelho a alternativa que a turma escolheu mais.
-              Quando as duas não coincidem, a turma inteira errou do mesmo jeito — é aí
-              que vale voltar o conteúdo.
-            </p>
           </section>
 
           {/* ------------------------------------------------- por aluno */}
           <section className="secao">
-            <h2 className="secao-titulo">Alunos</h2>
-            <div className="folha-papel tabela-rolagem" style={{ padding: '.25rem .75rem' }}>
+            <div className="cabeca-secao">
+              <span className="cabeca-numeral">IV</span>
+              <h2 className="cabeca-titulo">Alunos</h2>
+            </div>
+            <div className="tabela-rolagem">
               <table>
                 <thead>
                   <tr>

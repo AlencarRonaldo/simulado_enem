@@ -21,21 +21,33 @@ export default async function Entrada() {
 
   return (
     <main className="entrada-tela">
-      <div className="entrada-caixa">
+      <div className="entrada-grade">
+        {/* Manchete do caderno: o titulo e a capa, nao um cabecalho de app. */}
         <header className="marca">
-          <h1 className="marca-titulo">Simulado ENEM</h1>
-          <p className="marca-sub">Questões das provas oficiais de 2015 a 2023.</p>
+          <p className="marca-rotulo">Prova oficial · INEP</p>
+          <h1 className="marca-titulo">Simulado<br />ENEM</h1>
+          <p className="marca-sub">
+            Questões das provas oficiais de 2015 a 2023, com o mesmo formato
+            e o mesmo tempo do dia da prova.
+          </p>
+          <div className="marca-expediente">
+            <span>2015 — 2023</span>
+            <span>1541 questões</span>
+            <span>4 áreas</span>
+          </div>
         </header>
 
-        {erroBanco ? (
-          <div className="aviso">
-            Não foi possível falar com o banco de dados. Avise o professor.
-          </div>
-        ) : (
-          /* Mesmo formulario com ou sem simulado da turma: se nao houver nenhum
-             aberto, sobra o treino livre, que monta a prova na hora. */
-          <FormularioEntrada simulados={simulados} />
-        )}
+        <div className="formulario-coluna">
+          {erroBanco ? (
+            <div className="aviso">
+              Não foi possível falar com o banco de dados. Avise o professor.
+            </div>
+          ) : (
+            /* Mesmo formulario com ou sem simulado da turma: se nao houver nenhum
+               aberto, sobra o treino livre, que monta a prova na hora. */
+            <FormularioEntrada simulados={simulados} />
+          )}
+        </div>
       </div>
     </main>
   );

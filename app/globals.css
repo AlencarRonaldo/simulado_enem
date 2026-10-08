@@ -6,6 +6,13 @@
    serifa para os textos de apoio longos, medida curta, contraste alto, e a
    navegacao desenhada como a grade de bolhas da folha de respostas real —
    que de quebra mostra num olhar o que ja foi respondido.
+
+   A tela administrativa (professor, relatorio, resultado) segue a mesma
+   direcao mas com outra gramatica: IMPRESSO, nao dashboard. Isso quer dizer
+   regua no lugar de caixa, numeral romano no lugar de icone, e o numero
+   grande na linha de base do texto — como num boletim — em vez de numero
+   dentro de um cartao. Toda vez que surgir a escolha entre "mais uma borda"
+   e "mais um espaco em branco separado por fio", o espaco vence.
    =========================================================================== */
 
 :root {
@@ -130,6 +137,92 @@ a { color: var(--azul); text-decoration-thickness: 1px; text-underline-offset: 2
   color: var(--tinta-fraca);
 }
 
+/* --------------------------------------------------------- lingua editorial
+   A gramatica das telas administrativas. Nao sao componentes de dashboard:
+   sao os elementos de uma pagina impressa — numeral romano, fio, numero na
+   linha de base. Todos vivem aqui para professor, relatorio e resultado
+   falarem a mesma lingua sem repetir regra.
+   -------------------------------------------------------------------------- */
+
+/* Fio horizontal. O unico "componente de separacao" que existe: nao ha
+   caixa, nem sombra, nem fundo alternado. */
+.fio { border: 0; border-top: 1px solid var(--linha); margin: 0; }
+.fio-forte { border: 0; border-top: 2px solid var(--tinta); margin: 0; }
+
+/* Cabeca de secao: numeral romano + titulo serifado, com o fio acima.
+   O numeral e o que tira a cara de "titulo de card" — ele da ordem de
+   leitura e ancora a secao na pagina, como num relatorio impresso. */
+.cabeca-secao {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  flex-wrap: wrap;
+  padding-top: 1.75rem;
+  margin-bottom: 1rem;
+  border-top: 2px solid var(--tinta);
+}
+.cabeca-numeral {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--tinta-fraca);
+  min-width: 1.5rem;
+}
+.cabeca-titulo {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+}
+.cabeca-nota { flex-basis: 100%; margin: .375rem 0 0; }
+
+/* Variante para subsecao dentro de uma secao ja numerada: mesmo bloco, mas
+   so com fio fino em cima — o peso visual continua com a secao pai. */
+.cabeca-subsecao {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--linha);
+  padding-top: 1.25rem;
+}
+
+/* Faixa de numeros: o placar. Linha unica de cifras grandes, separadas por
+   fio vertical, sem moldura. E o contrario do grade de cartoes: nao ha
+   container por numero, so espaco e um fio — e por isso nao parece interface,
+   parece boletim. */
+.faixa-numeros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+.faixa-cifra {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  padding: 0 1.25rem;
+  border-left: 1px solid var(--linha);
+}
+.faixa-cifra:first-child { padding-left: 0; border-left: 0; }
+.faixa-valor {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 2.125rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+.faixa-rotulo {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  color: var(--tinta-fraca);
+}
+/* A cifra que importa menos recua: hierarquia sem mudar de caixa. */
+.faixa-cifra.secundaria .faixa-valor { font-size: 1.375rem; color: var(--tinta-media); }
+
 /* ------------------------------------------------------------------ botoes */
 button, .botao {
   font-size: .9375rem;
@@ -182,45 +275,153 @@ input:focus, select:focus { border-color: var(--azul); }
 .dica { font-size: .75rem; color: var(--tinta-fraca); margin-top: .25rem; display: block; }
 
 /* =============================================================== ENTRADA */
+/* Duas colunas no desktop: a manchete a esquerda, o formulario a direita.
+   Antes era um cartao centralizado unico — a tipografia pesada de um masthead
+   nao cabe dentro de uma caixa. */
 .entrada-tela {
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 1.5rem 1rem 3rem;
+  padding: 2.5rem 1.25rem 4rem;
 }
-.entrada-caixa { width: 100%; max-width: 27rem; }
+.entrada-grade {
+  width: 100%;
+  max-width: 58rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (min-width: 50rem) {
+  .entrada-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); gap: 4rem; }
+}
 
-.marca {
-  margin-bottom: 1.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--tinta);
+/* Manchete do caderno. Fio em cima, titulo serifado grande, e a linha de
+   creditos em versalete — como a capa de uma prova oficial. */
+.marca { padding-top: 1.25rem; border-top: 3px solid var(--tinta); }
+.marca-rotulo {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin: 0 0 .75rem;
 }
 .marca-titulo {
-  font-family: var(--fonte-sans), sans-serif;
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: clamp(2.25rem, 6vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: .95;
   margin: 0;
 }
-.marca-sub { font-size: .9375rem; color: var(--tinta-media); margin: .375rem 0 0; }
+.marca-sub {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  color: var(--tinta-media);
+  margin: .875rem 0 0;
+  max-width: 28ch;
+  line-height: 1.5;
+}
+/* Linha de creditos do caderno: anos, numero de questoes. Versalete com fio
+   em cima — informacao de expediente, nao corpo do texto. */
+.marca-expediente {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: .875rem;
+  border-top: 1px solid var(--linha);
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .75rem;
+  letter-spacing: .04em;
+  color: var(--tinta-fraca);
+}
+
+/* O formulario sem moldura: direto sobre o papel de fundo, separado por um
+   fio a esquerda no desktop — como a folha de inscricao picotada ao lado da
+   capa. Nada de cartao flutuando. */
+.formulario-coluna { border-left: 0; }
+@media (min-width: 50rem) {
+  .formulario-coluna {
+    border-left: 1px solid var(--linha);
+    padding-left: 2.5rem;
+    margin-left: -2rem;
+  }
+}
+.formulario { padding: 0; }
+
+/* Legendas de campo de formulario: versalete, como rotulo de formulario
+   impresso — nao negrito de interface. */
+.campos-legenda {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin: 0 0 .875rem;
+  padding-bottom: .4375rem;
+  border-bottom: 1px solid var(--linha);
+}
 
 .cartao { padding: 1.5rem; }
 
+/* Escolha de simulado: opcao de formulario impresso. Marcador de bolha a
+   esquerda (mesmo objeto da folha de respostas), texto a direita, fio em
+   baixo — nao caixa em volta. A opcao ativa recebe fundo lavado e fio azul
+   a esquerda, como a marca de um caneta na folha. */
 .escolha-simulado {
-  display: block;
-  border: 1px solid var(--linha);
-  border-radius: var(--raio);
-  padding: .8125rem .9375rem;
-  margin-bottom: .5rem;
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  border: 0;
+  border-bottom: 1px solid var(--linha);
+  border-left: 2px solid transparent;
+  padding: .8125rem .75rem;
   cursor: pointer;
-  background: var(--papel);
+  background: transparent;
 }
-.escolha-simulado:hover { border-color: var(--tinta-media); }
-.escolha-simulado.ativa { border-color: var(--azul); background: var(--azul-lavado); box-shadow: inset 0 0 0 1px var(--azul); }
+.escolha-simulado:first-of-type { border-top: 1px solid var(--linha); }
+.escolha-simulado:hover { background: var(--papel); }
+.escolha-simulado.ativa {
+  border-left-color: var(--azul);
+  background: var(--azul-lavado);
+}
 .escolha-simulado input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.escolha-titulo { font-family: var(--fonte-sans), sans-serif; font-weight: 600; font-size: .9375rem; display: block; }
-.escolha-meta { font-family: var(--fonte-sans), sans-serif; font-size: .8125rem; color: var(--tinta-fraca); margin-top: .125rem; display: block; }
+/* A bolha, igual a da prova: o aluno reconhece o objeto. */
+.escolha-bolha {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: .125rem;
+  border: 1.5px solid var(--linha-forte);
+  border-radius: 50%;
+  background: var(--papel);
+  transition: background .1s ease, border-color .1s ease, box-shadow .1s ease;
+}
+.escolha-simulado.ativa .escolha-bolha {
+  background: var(--azul);
+  border-color: var(--azul);
+  box-shadow: inset 0 0 0 3px var(--papel);
+}
+.escolha-texto { flex: 1; min-width: 0; }
+.escolha-titulo {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  display: block;
+}
+.escolha-meta {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  color: var(--tinta-fraca);
+  margin-top: .1875rem;
+  display: block;
+  line-height: 1.5;
+}
 
 /* ============================================================== PROVA */
 .prova {
@@ -292,9 +493,12 @@ input:focus, select:focus { border-color: var(--azul); }
   border-bottom: 1px solid var(--linha);
 }
 .caderno-numero {
-  font-family: var(--fonte-sans), sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
+  /* Serifa, como o numero de questao impresso no caderno do INEP — nao o
+     sans generico de interface. */
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 .caderno-origem { font-family: var(--fonte-sans), sans-serif; font-size: .8125rem; color: var(--tinta-fraca); }
@@ -508,31 +712,33 @@ input:focus, select:focus { border-color: var(--azul); }
 }
 
 /* ============================================================= RESULTADO */
-.pagina { max-width: 56rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
+.pagina { max-width: 60rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
 
-.placar {
-  display: flex;
-  align-items: baseline;
-  gap: .625rem;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.25rem;
+/* Tabela impressa: so fios horizontais. Sem caixa, sem fundo, sem cantos —
+   a moldura vem do cabeca-secao que a antede. th em versalete e a unica
+   pista de que a tabela comecou. */
+table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+th, td {
+  text-align: left;
+  padding: .55rem .75rem .55rem 0;
+  border-bottom: 1px solid var(--linha);
+  vertical-align: top;
 }
-.placar-numero {
-  font-family: var(--fonte-sans), sans-serif;
-  font-size: 3rem;
+th {
+  font-size: .6875rem;
   font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--linha-forte);
+  padding-bottom: .4375rem;
 }
-.placar-de { font-family: var(--fonte-sans), sans-serif; font-size: 1.125rem; color: var(--tinta-fraca); }
-.placar-pct { font-family: var(--fonte-sans), sans-serif; margin-left: auto; font-size: 1.125rem; font-weight: 600; color: var(--tinta-media); }
-
-tabela, table { width: 100%; border-collapse: collapse; font-size: .875rem; }
-th, td { text-align: left; padding: .5rem .625rem; border-bottom: 1px solid var(--linha); }
-th { font-size: .75rem; font-weight: 600; color: var(--tinta-media); white-space: nowrap; }
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: .75rem; }
+th.num { padding-right: 0; }
 tbody tr:last-child td { border-bottom: 0; }
+/* Linha de total: fio duplo em cima, como no fim de uma conta impressa. */
+tr.total td { border-top: 1px solid var(--tinta); border-bottom: 0; font-weight: 600; }
 
 /* Barra de proporcao dentro da tabela: compara areas sem virar grafico.
    display:block é obrigatório — é um <span>, e em inline o navegador ignora
@@ -555,83 +761,140 @@ tbody tr:last-child td { border-bottom: 0; }
 .errado { color: var(--alerta); font-weight: 600; }
 .vazio { color: var(--tinta-fraca); }
 
-/* ============================================================== PROFESSOR */
-.prof-cabeca {
+/* Manchete do resultado: o numero vem ANTES do texto, enorme, na linha de
+   base — como a nota de um boletim. Sem cartao em volta: o fio de cima ja
+   disse onde a secao comeca. */
+.manchete {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   gap: 1rem;
   flex-wrap: wrap;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--tinta);
-}
-.prof-cabeca h1 { flex: 1; }
-
-/* ------------------------------------------- metricas (visao de revisao) */
-.metricas-cabeca {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: .875rem;
-}
-.metricas-filtros {
-  display: flex;
-  align-items: flex-end;
-  gap: .75rem;
-  flex-wrap: wrap;
-}
-.metricas-filtros .campo { min-width: 11rem; margin-bottom: 0; }
-.metricas-filtros button { padding: .55rem 1rem; }
-
-.metricas-grade {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: .625rem;
+  padding: 1.25rem 0 1.5rem;
+  border-top: 2px solid var(--tinta);
+  border-bottom: 1px solid var(--linha);
   margin-bottom: 1.5rem;
 }
-.metrica { padding: .875rem 1rem; }
-.metrica-valor {
-  display: block;
+.manchete-valor {
   font-family: var(--fonte-sans), sans-serif;
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: .9;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+}
+.manchete-de {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: 1.25rem;
+  color: var(--tinta-media);
+}
+.manchete-pct {
+  font-family: var(--fonte-sans), sans-serif;
+  margin-left: auto;
   font-size: 1.75rem;
   font-weight: 700;
-  line-height: 1.1;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
-.metrica-rotulo {
-  display: block;
-  font-family: var(--fonte-sans), sans-serif;
-  font-size: .8125rem;
-  color: var(--tinta-fraca);
-  margin-top: .125rem;
-}
 
-.secao { margin-bottom: 2rem; }
-.secao-titulo {
-  font-family: var(--fonte-sans), sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 .75rem;
+/* ============================================================== PROFESSOR */
+
+/* Cabeca da pagina: o titulo e a unica coisa grande. Os controles ficam na
+   linha de baixo, alinhados a esquerda, sem moldura — como a assinatura e a
+   data no rodape de um documento. */
+.prof-cabeca {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  margin-bottom: 0;
 }
+.prof-cabeca h1 {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+  flex: 1;
+  min-width: 12rem;
+}
+.prof-sub { font-size: .9375rem; color: var(--tinta-media); margin: .25rem 0 0; }
+
+/* ------------------------------------------- filtros (form GET, sem JS) */
+.filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: .75rem 1rem;
+  flex-wrap: wrap;
+}
+.filtros .campo { min-width: 10rem; margin-bottom: 0; }
+.filtros button { padding: .5rem .9375rem; }
+/* A acao de aplicar e a unica destaque: o resto e preenchimento. */
+.filtros .botao-principal { padding: .5625rem 1.125rem; }
+
+.secao { margin-bottom: 2.5rem; }
 
 .linha-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0 1rem; }
 
-.lista-simulados { display: grid; gap: .625rem; }
-.item-simulado { padding: .9375rem 1.125rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-.item-simulado .cresce { flex: 1; min-width: 12rem; }
-.item-titulo { font-family: var(--fonte-sans), sans-serif; font-weight: 600; font-size: .9375rem; }
-.item-meta { font-family: var(--fonte-sans), sans-serif; font-size: .8125rem; color: var(--tinta-fraca); margin-top: .1875rem; }
+/* ------------------------------------------ lista de simulados (linhas) */
+/* Cada simulado e uma linha separada por fio, com o titulo a esquerda e os
+   controles a direita. Nao ha caixa por item: a lista parece um indice
+   impresso, e a borda que existe e a que separa um item do outro. */
+.lista-simulados { display: block; border-top: 1px solid var(--linha-forte); }
+.item-simulado {
+  display: flex;
+  gap: .75rem 1.25rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: .9375rem 0;
+  border-bottom: 1px solid var(--linha);
+}
+.item-simulado .cresce { flex: 1; min-width: 14rem; }
+.item-titulo {
+  font-family: var(--fonte-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+.item-meta {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  color: var(--tinta-fraca);
+  margin-top: .25rem;
+}
+/* Numero de alunos em cifra, alinhada a baseline do titulo: le se como
+   "3A — 24 alunos", nao como badge. */
+.item-cifra {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.item-cifra small {
+  display: block;
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  margin-top: .25rem;
+}
+.item-acoes { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
 
 .selo {
   font-family: var(--fonte-sans), sans-serif;
-  font-size: .75rem;
-  font-weight: 600;
-  padding: .125rem .4375rem;
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .1875rem .4375rem;
   border: 1px solid currentColor;
   border-radius: 2px;
+  white-space: nowrap;
 }
 .selo.aberto { color: var(--acerto); }
 .selo.fechado { color: var(--tinta-fraca); }

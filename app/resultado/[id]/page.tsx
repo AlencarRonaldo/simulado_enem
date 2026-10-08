@@ -17,13 +17,15 @@ export default async function Resultado({ params }: { params: Promise<{ id: stri
   if (!t.finalizado_em) {
     return (
       <main className="pagina">
-        <div className="folha-papel cartao">
-          <h1>Simulado em andamento</h1>
-          <p>O resultado aparece quando você entregar ou o tempo acabar.</p>
-          <Link className="botao botao-principal" href={`/simulado/${id}`}>
-            Voltar para a prova
-          </Link>
+        <div className="cabeca-secao" style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--linha)' }}>
+          <h1 className="cabeca-titulo">Simulado em andamento</h1>
+          <p className="nota cabeca-nota">
+            O resultado aparece quando você entregar ou o tempo acabar.
+          </p>
         </div>
+        <Link className="botao botao-principal" href={`/simulado/${id}`}>
+          Voltar para a prova
+        </Link>
       </main>
     );
   }
@@ -38,17 +40,20 @@ export default async function Resultado({ params }: { params: Promise<{ id: stri
       <header className="prof-cabeca">
         <div>
           <h1>Resultado</h1>
-          <p className="nota" style={{ margin: 0 }}>
+          <p className="prof-sub">
             {t.nome} · RA {t.ra} · sala {t.sala} — {t.titulo}
           </p>
         </div>
       </header>
 
-      <section className="folha-papel placar">
-        <span className="placar-numero">{c.acertos}</span>
-        <span className="placar-de">de {c.total} acertos</span>
-        <span className="placar-pct">{pct(c.percentual)}</span>
-      </section>
+      {/* Manchete do boletim: o numero enorme vem primeiro, na linha de base,
+          e o percentual recua a direita. Sem cartao em volta — o fio em cima
+          ja disse onde comeca. */}
+      <div className="manchete">
+        <span className="manchete-valor">{c.acertos}</span>
+        <span className="manchete-de">de {c.total} acertos</span>
+        <span className="manchete-pct">{pct(c.percentual)}</span>
+      </div>
 
       <p className="nota" style={{ marginTop: '-.5rem', marginBottom: '2rem' }}>
         {c.respondidas < c.total
@@ -60,8 +65,11 @@ export default async function Resultado({ params }: { params: Promise<{ id: stri
       </p>
 
       <section className="secao">
-        <h2 className="secao-titulo">Por área</h2>
-        <div className="folha-papel" style={{ padding: '.25rem .75rem' }}>
+        <div className="cabeca-secao">
+          <span className="cabeca-numeral">I</span>
+          <h2 className="cabeca-titulo">Por área</h2>
+        </div>
+        <div className="tabela-rolagem">
           <table>
             <thead>
               <tr>
@@ -90,8 +98,11 @@ export default async function Resultado({ params }: { params: Promise<{ id: stri
       </section>
 
       <section className="secao">
-        <h2 className="secao-titulo">Gabarito questão por questão</h2>
-        <div className="folha-papel tabela-rolagem" style={{ padding: '.25rem .75rem' }}>
+        <div className="cabeca-secao">
+          <span className="cabeca-numeral">II</span>
+          <h2 className="cabeca-titulo">Gabarito questão por questão</h2>
+        </div>
+        <div className="tabela-rolagem">
           <table>
             <thead>
               <tr>

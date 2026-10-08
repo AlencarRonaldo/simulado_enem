@@ -70,8 +70,11 @@ export function FormularioEntrada({ simulados }: { simulados: SimuladoAberto[] }
   }
 
   return (
-    <form className="folha-papel cartao" onSubmit={entrar}>
-      <h2>Seus dados</h2>
+    /* Sem moldura de cartao: o formulario e a folha de inscricao picotada ao
+       lado da capa, separada por um fio (feito no CSS da coluna). */
+    <form className="formulario" onSubmit={entrar}>
+      {/* Legenda em versalete, como rotulo de formulario impresso. */}
+      <p className="campos-legenda">Seus dados</p>
 
       <label className="campo">
         <span>Nome completo</span>
@@ -107,8 +110,12 @@ export function FormularioEntrada({ simulados }: { simulados: SimuladoAberto[] }
         </label>
       </div>
 
-      <h2 style={{ marginTop: '1.25rem' }}>O que você vai fazer</h2>
+      <p className="campos-legenda" style={{ marginTop: '1.75rem' }}>
+        O que você vai fazer
+      </p>
 
+      {/* Cada opcao e uma linha com bolha a esquerda — o mesmo objeto da folha
+          de respostas da prova. Fio embaixo, nao caixa em volta. */}
       {simulados.map((s) => (
         <label key={s.id} className={`escolha-simulado${escolhido === s.id ? ' ativa' : ''}`}>
           <input
@@ -118,9 +125,12 @@ export function FormularioEntrada({ simulados }: { simulados: SimuladoAberto[] }
             checked={escolhido === s.id}
             onChange={() => setEscolhido(s.id)}
           />
-          <span className="escolha-titulo">{s.titulo}</span>
-          <span className="escolha-meta">
-            {s.questoes} questões · {horas(s.duracao_min)}
+          <span className="escolha-bolha" aria-hidden="true" />
+          <span className="escolha-texto">
+            <span className="escolha-titulo">{s.titulo}</span>
+            <span className="escolha-meta">
+              {s.questoes} questões · {horas(s.duracao_min)}
+            </span>
           </span>
         </label>
       ))}
@@ -133,10 +143,13 @@ export function FormularioEntrada({ simulados }: { simulados: SimuladoAberto[] }
           checked={ehTreino}
           onChange={() => setEscolhido(TREINO)}
         />
-        <span className="escolha-titulo">Treino livre</span>
-        <span className="escolha-meta">
-          A prova é sorteada agora, no padrão do ENEM, com questões de 2015 a 2023.
-          Você pode fazer quantas vezes quiser.
+        <span className="escolha-bolha" aria-hidden="true" />
+        <span className="escolha-texto">
+          <span className="escolha-titulo">Treino livre</span>
+          <span className="escolha-meta">
+            A prova é sorteada agora, no padrão do ENEM, com questões de 2015 a 2023.
+            Você pode fazer quantas vezes quiser.
+          </span>
         </span>
       </label>
 

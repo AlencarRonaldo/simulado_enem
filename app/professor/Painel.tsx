@@ -94,8 +94,15 @@ export function Painel() {
     <>
       {/* ------------------------------------------------- montar simulado */}
       <section className="secao">
-        <h2 className="secao-titulo">Montar um simulado</h2>
-        <form className="folha-papel cartao" onSubmit={criar}>
+        <div className="cabeca-secao">
+          <span className="cabeca-numeral">III</span>
+          <h2 className="cabeca-titulo">Montar um simulado</h2>
+          <p className="nota cabeca-nota">
+            As questões são sorteadas agora e ficam fixas: todos os alunos fazem a
+            mesma prova, na mesma ordem.
+          </p>
+        </div>
+        <form onSubmit={criar}>
           <label className="campo">
             <span>Tipo</span>
             <select value={modo} onChange={(e) => setModo(e.target.value as Modo)}>
@@ -175,9 +182,9 @@ export function Painel() {
           {erro && <div className="aviso">{erro}</div>}
 
           {criado && (
-            <div className="folha-papel" style={{ padding: '.875rem', marginBottom: '.75rem' }}>
-              <h3>Simulado criado e aberto</h3>
-              <p className="nota" style={{ marginTop: 0 }}>
+            <div className="cabeca-secao" style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--linha)' }}>
+              <h3 className="cabeca-titulo">Simulado criado e aberto</h3>
+              <p className="nota cabeca-nota">
                 Passe este endereço para os alunos — eles escolhem o simulado na lista:
               </p>
               <div className="link-aluno">
@@ -189,45 +196,50 @@ export function Painel() {
           <button type="submit" className="botao-principal" disabled={criando}>
             {criando ? 'Sorteando questões…' : 'Montar simulado'}
           </button>
-          <p className="nota" style={{ marginBottom: 0, marginTop: '.75rem' }}>
-            As questões são sorteadas agora e ficam fixas: todos os alunos fazem a
-            mesma prova, na mesma ordem.
-          </p>
         </form>
       </section>
 
       {/* -------------------------------------------------------- simulados */}
       <section className="secao">
-        <h2 className="secao-titulo">Simulados</h2>
+        <div className="cabeca-secao">
+          <span className="cabeca-numeral">IV</span>
+          <h2 className="cabeca-titulo">Simulados</h2>
+        </div>
 
         {carregando ? (
           <p className="nota">Carregando…</p>
         ) : simulados.length === 0 ? (
-          <div className="folha-papel cartao">
-            <p className="nota" style={{ margin: 0 }}>Nenhum simulado ainda. Monte o primeiro acima.</p>
-          </div>
+          <p className="nota">Nenhum simulado ainda. Monte o primeiro acima.</p>
         ) : (
+          /* Linhas separadas por fio, com a cifra de alunos na linha de base do
+             titulo — parece um indice impresso, nao uma grade de cartoes. */
           <div className="lista-simulados">
             {simulados.map((s) => (
-              <div className="folha-papel item-simulado" key={s.id}>
+              <div className="item-simulado" key={s.id}>
                 <div className="cresce">
                   <div className="item-titulo">{s.titulo}</div>
                   <div className="item-meta">
-                    {s.questoes} questões · {horas(s.duracao_min)} ·{' '}
-                    {s.tentativas} {s.tentativas === 1 ? 'aluno' : 'alunos'}
-                    {s.tentativas > 0 && ` (${s.concluidas} concluíram)`}
+                    {s.questoes} questões · {horas(s.duracao_min)}
+                    {s.automatico && ' · treino do aluno'}
                   </div>
                 </div>
-                {s.automatico && <span className="selo automatico">Treino do aluno</span>}
+                {s.tentativas > 0 && (
+                  <span className="item-cifra">
+                    {s.tentativas}
+                    <small>{s.concluidas === s.tentativas ? 'concluíram' : `de ${s.concluidas} concl.`}</small>
+                  </span>
+                )}
                 <span className={`selo ${s.ativo ? 'aberto' : 'fechado'}`}>
                   {s.ativo ? 'Aberto' : 'Fechado'}
                 </span>
-                <button onClick={() => alternar(s)}>
-                  {s.ativo ? 'Fechar' : 'Abrir'}
-                </button>
-                <Link className="botao" href={`/professor/relatorio/${s.id}`}>
-                  Relatório
-                </Link>
+                <span className="item-acoes">
+                  <button onClick={() => alternar(s)}>
+                    {s.ativo ? 'Fechar' : 'Abrir'}
+                  </button>
+                  <Link className="botao" href={`/professor/relatorio/${s.id}`}>
+                    Relatório
+                  </Link>
+                </span>
               </div>
             ))}
           </div>

@@ -37,8 +37,10 @@ function Distribuicao({ q }: { q: QuestaoMetrica }) {
 }
 
 function TabelaQuestoes({ questoes }: { questoes: QuestaoMetrica[] }) {
+  /* Sem moldura: a tabela e impressa direto na pagina, separada por fios.
+     A cabeca-secao que a antede ja disse onde ela comeca. */
   return (
-    <div className="folha-papel tabela-rolagem" style={{ padding: '.25rem .75rem' }}>
+    <div className="tabela-rolagem">
       <table>
         <thead>
           <tr>
@@ -90,35 +92,41 @@ export async function Metricas({ filtro }: { filtro: FiltroMetricas }) {
 
   return (
     <section className="secao">
-      <div className="metricas-cabeca">
-        <h2 className="secao-titulo" style={{ margin: 0 }}>Como está a turma</h2>
-
-        <form method="get" className="metricas-filtros">
-          <label className="campo" style={{ marginBottom: 0 }}>
-            <span>Ver</span>
-            <select name="origem" defaultValue={filtro.origem}>
-              <option value="turma">Simulados da turma</option>
-              <option value="treino">Treinos dos alunos</option>
-              <option value="todos">Tudo junto</option>
-            </select>
-          </label>
-          <label className="campo" style={{ marginBottom: 0 }}>
-            <span>Sala</span>
-            <select name="sala" defaultValue={filtro.sala}>
-              <option value="">Todas</option>
-              {opcoes.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </label>
-          <button type="submit">Aplicar</button>
-        </form>
+      <div className="cabeca-secao">
+        <span className="cabeca-numeral">II</span>
+        <h2 className="cabeca-titulo">Como está a turma</h2>
+        <p className="nota cabeca-nota">
+          Acertos por área, por sala e as questões que mais derrubaram a turma.
+        </p>
       </div>
 
+      {/* Filtros no topo da secao: em form GET, sem JavaScript — funciona ate
+          com o painel aberto numa maquina lenta da escola. */}
+      <form method="get" className="filtros" style={{ marginBottom: '2rem' }}>
+        <label className="campo">
+          <span>Ver</span>
+          <select name="origem" defaultValue={filtro.origem}>
+            <option value="turma">Simulados da turma</option>
+            <option value="treino">Treinos dos alunos</option>
+            <option value="todos">Tudo junto</option>
+          </select>
+        </label>
+        <label className="campo">
+          <span>Sala</span>
+          <select name="sala" defaultValue={filtro.sala}>
+            <option value="">Todas</option>
+            {opcoes.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </label>
+        <button type="submit" className="botao-principal">Aplicar</button>
+      </form>
+
       {!temDados ? (
-        <div className="folha-papel cartao">
-          <h3>Ainda não há respostas para mostrar</h3>
-          <p className="nota" style={{ margin: 0 }}>
+        <div className="cabeca-secao" style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--linha)' }}>
+          <h3 className="cabeca-titulo">Ainda não há respostas para mostrar</h3>
+          <p className="nota cabeca-nota">
             Assim que os alunos começarem a responder, os acertos e erros aparecem
             aqui — {filtro.origem === 'treino' ? 'talvez outro filtro tenha dados' : 'não precisa esperar todos terminarem'}.
           </p>
@@ -126,27 +134,33 @@ export async function Metricas({ filtro }: { filtro: FiltroMetricas }) {
       ) : (
         <>
           {/* ------------------------------------------------------ placar */}
-          <div className="metricas-grade">
-            <div className="metrica folha-papel">
-              <span className="metrica-valor">{r.alunos}</span>
-              <span className="metrica-rotulo">{r.alunos === 1 ? 'aluno' : 'alunos'}</span>
-            </div>
-            <div className="metrica folha-papel">
-              <span className="metrica-valor">{r.tentativas}</span>
-              <span className="metrica-rotulo">
-                {r.tentativas === 1 ? 'prova feita' : 'provas feitas'} ({r.concluidas} concluída{r.concluidas === 1 ? '' : 's'})
+          {/* Uma linha de cifras separadas por fio, sem cartao em volta —
+              boletim, nao dashboard. */}
+          <div className="faixa-numeros">
+            <span className="faixa-cifra">
+              <b className="faixa-valor">{r.alunos}</b>
+              <span className="faixa-rotulo">{r.alunos === 1 ? 'aluno' : 'alunos'}</span>
+            </span>
+            <span className="faixa-cifra">
+              <b className="faixa-valor">{r.tentativas}</b>
+              <span className="faixa-rotulo">
+                {r.tentativas === 1 ? 'prova feita' : 'provas feitas'}
+                {r.concluidas > 0 && ` · ${r.concluidas} concluída${r.concluidas === 1 ? '' : 's'}`}
               </span>
-            </div>
-            <div className="metrica folha-papel">
-              <span className="metrica-valor">{pct(r.percentual)}</span>
-              <span className="metrica-rotulo">acerto médio em {r.respostas} respostas</span>
-            </div>
+            </span>
+            <span className="faixa-cifra">
+              <b className="faixa-valor">{pct(r.percentual)}</b>
+              <span className="faixa-rotulo">acerto médio em {r.respostas} respostas</span>
+            </span>
           </div>
 
           {/* ---------------------------------------------------- por area */}
           <section className="secao">
-            <h3 className="secao-titulo">Onde estão os buracos — por área, pior primeiro</h3>
-            <div className="folha-papel" style={{ padding: '.25rem .75rem' }}>
+            <div className="cabeca-secao cabeca-subsecao">
+              <h2 className="cabeca-titulo">Onde estão os buracos</h2>
+              <p className="nota cabeca-nota">Por área do conhecimento, pior primeiro.</p>
+            </div>
+            <div className="tabela-rolagem">
               <table>
                 <thead>
                   <tr>
@@ -177,8 +191,11 @@ export async function Metricas({ filtro }: { filtro: FiltroMetricas }) {
           {/* -------------------------------------------------- por sala */}
           {salas.length > 1 && (
             <section className="secao">
-              <h3 className="secao-titulo">Por sala, pior primeiro</h3>
-              <div className="folha-papel" style={{ padding: '.25rem .75rem' }}>
+              <div className="cabeca-secao cabeca-subsecao">
+                <h2 className="cabeca-titulo">Por sala</h2>
+                <p className="nota cabeca-nota">Pior primeiro.</p>
+              </div>
+              <div className="tabela-rolagem">
                 <table>
                   <thead>
                     <tr>
@@ -209,23 +226,28 @@ export async function Metricas({ filtro }: { filtro: FiltroMetricas }) {
 
           {/* ------------------------------------------------ erradas */}
           <section className="secao">
-            <h3 className="secao-titulo">O que a turma mais errou — candidate à revisão</h3>
+            <div className="cabeca-secao cabeca-subsecao">
+              <h2 className="cabeca-titulo">O que a turma mais errou</h2>
+              <p className="nota cabeca-nota">
+                Candidate à revisão. Em verde o gabarito, em vermelho a alternativa
+                mais escolhida — quando as duas não coincidem, a turma inteira errou
+                do mesmo jeito, e é aí que a aula precisa voltar. Só entram questões
+                com {MIN_RESPOSTAS} respostas ou mais.
+              </p>
+            </div>
             {erradas.length === 0 ? (
               <p className="nota">Nenhuma questão chegou a {MIN_RESPOSTAS} respostas ainda.</p>
             ) : (
               <TabelaQuestoes questoes={erradas} />
             )}
-            <p className="nota" style={{ marginTop: '.5rem' }}>
-              Em verde o gabarito, em vermelho a alternativa mais escolhida. Quando as
-              duas não coincidem, a turma inteira errou do mesmo jeito — é aí que a
-              aula precisa voltar. Só entram questões com {MIN_RESPOSTAS} respostas ou mais.
-            </p>
           </section>
 
           {/* ----------------------------------------------- acertadas */}
           {acertadas.length > 0 && (
             <section className="secao">
-              <h3 className="secao-titulo">O que já está assentado</h3>
+              <div className="cabeca-secao cabeca-subsecao">
+                <h2 className="cabeca-titulo">O que já está assentado</h2>
+              </div>
               <TabelaQuestoes questoes={acertadas} />
             </section>
           )}

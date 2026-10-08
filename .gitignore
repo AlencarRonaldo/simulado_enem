@@ -9,3 +9,7 @@ next-env.d.ts
 # data/questoes.json e public/q/ ENTRAM no Git: a Vercel serve as imagens
 # de public/q estaticamente, e sem elas as questoes aparecem sem imagem.
 /.cache-enem-api/
+
+# Vercel CLI (IDs de projeto/time locais). O .env.local ja esta acima;
+# o .env.local.example DEVE ir para o Git, entao nada de ".env*".
+.vercel
