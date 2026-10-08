@@ -28,12 +28,15 @@ export function AvisoInicial() {
           alt="Brasão da E.E. Ayrton Senna da Silva"
         />
         <h2 className="modal-titulo">
-          Provão Paulista<br />e ENEM
+          Bem-vindo!<br />Boa prova!
         </h2>
         <p className="modal-texto">
-          Este sistema foi feito para auxiliar no estudo e na preparação para o
-          Provão Paulista e o ENEM. Iniciativa da{' '}
-          <strong>E.E. Ayrton Senna da Silva</strong>.
+          Este sistema foi criado para auxiliar no estudo e na preparação para o
+          Provão Paulista e o ENEM. Aqui você encontra simulados com questões
+          oficiais, no mesmo formato e tempo da prova real.
+        </p>
+        <p className="modal-texto" style={{ marginBottom: '1.5rem' }}>
+          Iniciativa da <strong>E.E. Ayrton Senna da Silva</strong>.
         </p>
         <button className="botao-principal" onClick={() => setAberto(false)}>
           Começar

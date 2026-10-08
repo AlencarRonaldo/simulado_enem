@@ -941,15 +941,15 @@ tr.total td { border-top: 1px solid var(--tinta); border-bottom: 0; font-weight:
   border: 1px solid var(--tinta);
   border-radius: var(--raio);
   padding: 2rem 1.75rem 1.75rem;
-  text-align: left;
+  text-align: center;
 }
 .modal-logo {
   display: block;
   height: 5.5rem;
   width: auto;
   object-fit: contain;
-  object-position: left center;
-  margin: 0 0 1.25rem;
+  object-position: center;
+  margin: 0 auto 1.25rem;
 }
 .modal-titulo {
   font-family: var(--fonte-serif), Georgia, serif;
@@ -964,7 +964,8 @@ tr.total td { border-top: 1px solid var(--tinta); border-bottom: 0; font-weight:
   font-size: .9375rem;
   line-height: 1.6;
   color: var(--tinta-media);
-  margin: 0 0 1.5rem;
+  margin: 0 auto 1.5rem;
+  max-width: 34ch;
 }
 .modal-texto strong { color: var(--tinta); font-weight: 600; }
 .modal .botao-principal { width: 100%; }
