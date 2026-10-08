@@ -304,7 +304,7 @@ input:focus, select:focus { border-color: var(--azul); }
    mantem a proporcao mesmo se o arquivo for grande. */
 .marca-logo {
   display: block;
-  height: 4.5rem;
+  height: 6.5rem;
   width: auto;
   object-fit: contain;
   object-position: left center;
