@@ -1,0 +1,648 @@
+/* ===========================================================================
+   Sistema ENEM — folha de estilo
+
+   Direcao: o caderno de questoes impresso do INEP e a folha de respostas.
+   O aluno fica ate 5h30 nesta tela, entao legibilidade vence qualquer efeito:
+   serifa para os textos de apoio longos, medida curta, contraste alto, e a
+   navegacao desenhada como a grade de bolhas da folha de respostas real —
+   que de quebra mostra num olhar o que ja foi respondido.
+   =========================================================================== */
+
+:root {
+  /* Papel e tinta */
+  --papel:        #fbfaf7;
+  --papel-fundo:  #f1efe9;
+  --tinta:        #15202b;  /* preto-azulado de tinta, nao cinza */
+  --tinta-media:  #41505f;
+  --tinta-fraca:  #6c7885;
+  --linha:        #d9d5cc;
+  --linha-forte:  #b9b3a7;
+
+  /* Azul institucional do caderno */
+  --azul:         #1b4d7e;
+  --azul-escuro:  #143b61;
+  --azul-lavado:  #e7eff6;
+
+  /* Sinais — usados com parcimonia */
+  --alerta:       #a8321e;
+  --alerta-lavado:#fbeae6;
+  --acerto:       #1f6f4a;
+  --acerto-lavado:#e8f2ec;
+
+  /* Cada area tem sua cor, como as capas coloridas dos cadernos */
+  --c-linguagens: #7a3d8f;
+  --c-humanas:    #a8601e;
+  --c-natureza:   #1f6f4a;
+  --c-matematica: #1b4d7e;
+
+  --medida: 64ch;      /* medida de leitura do caderno */
+  --raio: 3px;
+
+  /* Famílias auto-hospedadas, carregadas em app/layout.tsx */
+  --fonte-serif: 'Source Serif 4 Variable';
+  --fonte-sans: 'Archivo Variable';
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']) {
+    --papel:        #141a20;
+    --papel-fundo:  #0d1216;
+    --tinta:        #e8e4da;
+    --tinta-media:  #b3aea2;
+    --tinta-fraca:  #8d8779;
+    --linha:        #2b343d;
+    --linha-forte:  #3c4752;
+    --azul:         #7fb2dd;
+    --azul-escuro:  #a3c9e8;
+    --azul-lavado:  #1b2832;
+    --alerta:       #e8846f;
+    --alerta-lavado:#2e1d19;
+    --acerto:       #6cc396;
+    --acerto-lavado:#16261f;
+    --c-linguagens: #c58fd6;
+    --c-humanas:    #d99a53;
+    --c-natureza:   #6cc396;
+    --c-matematica: #7fb2dd;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--papel-fundo);
+  color: var(--tinta);
+  font-family: var(--fonte-serif), Georgia, 'Times New Roman', serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;              /* serifa pede entrelinha um pouco maior */
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .ui, button, input, select, label, table, .folha {
+  font-family: var(--fonte-sans), system-ui, -apple-system, sans-serif;
+}
+
+h1 { font-size: 1.5rem; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 .25rem; }
+h2 { font-size: 1.125rem; line-height: 1.3; font-weight: 600; margin: 0 0 .5rem; }
+h3 { font-size: .9375rem; line-height: 1.35; font-weight: 600; margin: 0 0 .5rem; }
+
+a { color: var(--azul); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* ------------------------------------------------------------- utilitarios */
+.folha-papel {
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+}
+
+.sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.aviso {
+  padding: .75rem .875rem;
+  border-left: 3px solid var(--alerta);
+  background: var(--alerta-lavado);
+  color: var(--alerta);
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .875rem;
+  line-height: 1.5;
+  border-radius: 0 var(--raio) var(--raio) 0;
+}
+
+.nota {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  line-height: 1.55;
+  color: var(--tinta-fraca);
+}
+
+/* ------------------------------------------------------------------ botoes */
+button, .botao {
+  font-size: .9375rem;
+  font-weight: 500;
+  font-family: var(--fonte-sans), sans-serif;
+  padding: .625rem 1.125rem;
+  border-radius: var(--raio);
+  border: 1px solid var(--linha-forte);
+  background: var(--papel);
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease;
+}
+button:hover:not(:disabled), .botao:hover { border-color: var(--tinta-media); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+.botao-principal {
+  background: var(--azul);
+  border-color: var(--azul);
+  color: #fff;
+  font-weight: 600;
+}
+.botao-principal:hover:not(:disabled) { background: var(--azul-escuro); border-color: var(--azul-escuro); }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']) .botao-principal { color: #0d1216; }
+}
+
+.botao-perigo { border-color: var(--alerta); color: var(--alerta); background: transparent; }
+
+/* ------------------------------------------------------------------ campos */
+label.campo { display: block; margin-bottom: .875rem; }
+label.campo > span {
+  display: block;
+  font-size: .8125rem;
+  font-weight: 600;
+  margin-bottom: .3125rem;
+  color: var(--tinta-media);
+}
+input, select {
+  width: 100%;
+  font-size: 1rem;
+  padding: .625rem .75rem;
+  border: 1px solid var(--linha-forte);
+  border-radius: var(--raio);
+  background: var(--papel);
+  color: var(--tinta);
+}
+input:focus, select:focus { border-color: var(--azul); }
+.dica { font-size: .75rem; color: var(--tinta-fraca); margin-top: .25rem; display: block; }
+
+/* =============================================================== ENTRADA */
+.entrada-tela {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem 1rem 3rem;
+}
+.entrada-caixa { width: 100%; max-width: 27rem; }
+
+.marca {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--tinta);
+}
+.marca-titulo {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+.marca-sub { font-size: .9375rem; color: var(--tinta-media); margin: .375rem 0 0; }
+
+.cartao { padding: 1.5rem; }
+
+.escolha-simulado {
+  display: block;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: .8125rem .9375rem;
+  margin-bottom: .5rem;
+  cursor: pointer;
+  background: var(--papel);
+}
+.escolha-simulado:hover { border-color: var(--tinta-media); }
+.escolha-simulado.ativa { border-color: var(--azul); background: var(--azul-lavado); box-shadow: inset 0 0 0 1px var(--azul); }
+.escolha-simulado input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.escolha-titulo { font-family: var(--fonte-sans), sans-serif; font-weight: 600; font-size: .9375rem; display: block; }
+.escolha-meta { font-family: var(--fonte-sans), sans-serif; font-size: .8125rem; color: var(--tinta-fraca); margin-top: .125rem; display: block; }
+
+/* ============================================================== PROVA */
+.prova {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--papel-fundo);
+}
+
+/* Barra do cronometro: fina, fixa, sempre visivel */
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .5rem max(1rem, env(safe-area-inset-left)) .5rem 1rem;
+  background: var(--papel);
+  border-bottom: 1px solid var(--linha-forte);
+  font-family: var(--fonte-sans), sans-serif;
+}
+.barra-id { font-size: .8125rem; color: var(--tinta-fraca); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra-pos { font-size: .8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.relogio {
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+  padding: .1875rem .5rem;
+  border-radius: var(--raio);
+  background: var(--azul-lavado);
+  color: var(--azul);
+  border: 1px solid transparent;
+}
+/* Ultimos 5 minutos: a unica animacao da prova, porque e a unica coisa
+   que o aluno precisa notar sem estar olhando para ela. */
+.relogio.urgente {
+  background: var(--alerta-lavado);
+  color: var(--alerta);
+  border-color: var(--alerta);
+  animation: pulso 2s ease-in-out infinite;
+}
+@keyframes pulso { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+
+.prova-corpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  gap: 1.5rem;
+  align-items: start;
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 6rem;
+}
+
+/* ------------------------------------------------- caderno (a questao) */
+.caderno { padding: 1.75rem 1.75rem 1.5rem; }
+
+.caderno-cabeca {
+  display: flex;
+  align-items: baseline;
+  gap: .625rem;
+  flex-wrap: wrap;
+  padding-bottom: .875rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--linha);
+}
+.caderno-numero {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.caderno-origem { font-family: var(--fonte-sans), sans-serif; font-size: .8125rem; color: var(--tinta-fraca); }
+
+.tag-area {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .125rem .4375rem;
+  border-radius: 2px;
+  border: 1px solid currentColor;
+  margin-left: auto;
+}
+.tag-area[data-area='linguagens']        { color: var(--c-linguagens); }
+.tag-area[data-area='ciencias-humanas']  { color: var(--c-humanas); }
+.tag-area[data-area='ciencias-natureza'] { color: var(--c-natureza); }
+.tag-area[data-area='matematica']        { color: var(--c-matematica); }
+
+/* O texto de apoio, na medida curta do caderno impresso — mas alinhado à
+   esquerda, não justificado. O caderno do INEP é justificado; na tela não dá:
+   sem um hifenizador de verdade, as linhas de fonte ("Disponível em: http://…")
+   abrem rios de espaço em branco, porque a URL é um bloco indivisível. Numa
+   prova de 5h30 a legibilidade vale mais que a fidelidade à diagramação.
+   pre-wrap preserva as quebras simples dentro do parágrafo, de que poema e
+   letra de música dependem. */
+.contexto {
+  max-width: var(--medida);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;   /* URL comprida não estoura a coluna */
+  margin: 0 0 1rem;
+}
+.contexto:last-of-type { margin-bottom: 0; }
+
+.figura { margin: 1.25rem 0; }
+.figura img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--linha);
+  border-radius: 2px;
+  background: #fff;   /* as imagens do INEP tem fundo branco; preserva no escuro */
+}
+
+.pergunta {
+  max-width: var(--medida);
+  white-space: pre-wrap;
+  font-weight: 600;
+  margin: 1.25rem 0 1rem;
+}
+.pergunta + .pergunta { margin-top: .5rem; }
+
+/* Parágrafo dentro de uma alternativa: sem margem, para a alternativa
+   continuar sendo uma linha de leitura e não um bloco solto. */
+.alternativa-par { margin: 0; white-space: pre-wrap; }
+.alternativa-par + .alternativa-par { margin-top: .375rem; }
+.alternativa-texto .figura { margin: .5rem 0 0; }
+
+/* ---------------------------------------------------------- alternativas */
+.alternativas { list-style: none; margin: 0; padding: 0; max-width: var(--medida); }
+
+.alternativa {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  padding: .625rem .75rem;
+  border: 1px solid transparent;
+  border-radius: var(--raio);
+  cursor: pointer;
+  margin-bottom: .125rem;
+}
+.alternativa:hover { background: var(--papel-fundo); }
+.alternativa input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+.alternativa.marcada {
+  background: var(--azul-lavado);
+  border-color: var(--azul);
+}
+
+/* A bolha: o mesmo objeto da folha de respostas, aqui em tamanho de leitura */
+.bolha {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: .125rem;
+  border: 1.5px solid var(--linha-forte);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--tinta-fraca);
+  background: var(--papel);
+  transition: background .1s ease, color .1s ease, border-color .1s ease;
+}
+.alternativa.marcada .bolha {
+  background: var(--azul);
+  border-color: var(--azul);
+  color: #fff;
+}
+.alternativa-texto { flex: 1; min-width: 0; }
+.alternativa-texto img { max-width: 100%; height: auto; border: 1px solid var(--linha); background: #fff; border-radius: 2px; }
+
+/* ------------------------------------------------------------- navegacao */
+.navegacao {
+  display: flex;
+  gap: .625rem;
+  align-items: center;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--linha);
+}
+.navegacao .espaco { flex: 1; }
+
+/* ------------------------------------------ folha de respostas (lateral) */
+.folha { padding: 1rem; position: sticky; top: 3.5rem; }
+.folha-cabeca {
+  font-size: .8125rem;
+  font-weight: 600;
+  padding-bottom: .625rem;
+  margin-bottom: .75rem;
+  border-bottom: 1px solid var(--linha);
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+}
+.folha-contagem { color: var(--tinta-fraca); font-variant-numeric: tabular-nums; font-weight: 500; }
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.125rem, 1fr));
+  gap: .25rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 0 -.25rem;
+  padding: 0 .25rem;
+}
+
+/* Cada item da grade e uma questao: numero + estado */
+.grade-item {
+  all: unset;
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 2rem;
+  height: 2rem;
+  border: 1px solid var(--linha);
+  border-radius: 2px;
+  color: var(--tinta-fraca);
+  background: var(--papel);
+}
+.grade-item:hover { border-color: var(--tinta-media); }
+.grade-item.respondida {
+  background: var(--azul-lavado);
+  border-color: var(--azul);
+  color: var(--azul);
+  font-weight: 700;
+}
+.grade-item.atual {
+  outline: 2px solid var(--tinta);
+  outline-offset: 1px;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.folha-rodape { margin-top: .875rem; padding-top: .75rem; border-top: 1px solid var(--linha); }
+
+/* ----------------------------------------------- folha no celular */
+.folha-botao-mobile { display: none; }
+
+@media (max-width: 54rem) {
+  .prova-corpo { grid-template-columns: minmax(0, 1fr); padding: 1rem .75rem 5.5rem; gap: 1rem; }
+  .caderno { padding: 1.25rem 1.125rem; }
+
+  /* A folha vira uma gaveta que sobe de baixo */
+  .folha-lateral {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 30;
+    max-height: 72dvh;
+    overflow-y: auto;
+    border-radius: var(--raio) var(--raio) 0 0;
+    border-bottom: 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,.18);
+    transform: translateY(101%);
+    transition: transform .18s ease;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+  .folha-lateral.aberta { transform: translateY(0); }
+  .folha { position: static; }
+  .grade { max-height: 48dvh; }
+
+  .folha-botao-mobile {
+    display: flex;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 25;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    width: 100%;
+    padding: .75rem 1rem calc(.75rem + env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1px solid var(--linha-forte);
+    border-radius: 0;
+    background: var(--papel);
+    font-weight: 600;
+  }
+}
+
+/* ============================================================= RESULTADO */
+.pagina { max-width: 56rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+.placar {
+  display: flex;
+  align-items: baseline;
+  gap: .625rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.placar-numero {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+.placar-de { font-family: var(--fonte-sans), sans-serif; font-size: 1.125rem; color: var(--tinta-fraca); }
+.placar-pct { font-family: var(--fonte-sans), sans-serif; margin-left: auto; font-size: 1.125rem; font-weight: 600; color: var(--tinta-media); }
+
+tabela, table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+th, td { text-align: left; padding: .5rem .625rem; border-bottom: 1px solid var(--linha); }
+th { font-size: .75rem; font-weight: 600; color: var(--tinta-media); white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr:last-child td { border-bottom: 0; }
+
+/* Barra de proporcao dentro da tabela: compara areas sem virar grafico.
+   display:block é obrigatório — é um <span>, e em inline o navegador ignora
+   height, min-width e overflow, fazendo a barra sumir por completo. */
+.barra-prop {
+  display: block;
+  width: 100%;
+  min-width: 4rem;
+  height: .375rem;
+  background: var(--papel-fundo);
+  border: 1px solid var(--linha);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.barra-prop > i { display: block; height: 100%; background: var(--azul); }
+
+.tabela-rolagem { overflow-x: auto; }
+
+.certo { color: var(--acerto); font-weight: 600; }
+.errado { color: var(--alerta); font-weight: 600; }
+.vazio { color: var(--tinta-fraca); }
+
+/* ============================================================== PROFESSOR */
+.prof-cabeca {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--tinta);
+}
+.prof-cabeca h1 { flex: 1; }
+
+/* ------------------------------------------- metricas (visao de revisao) */
+.metricas-cabeca {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: .875rem;
+}
+.metricas-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+.metricas-filtros .campo { min-width: 11rem; margin-bottom: 0; }
+.metricas-filtros button { padding: .55rem 1rem; }
+
+.metricas-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: .625rem;
+  margin-bottom: 1.5rem;
+}
+.metrica { padding: .875rem 1rem; }
+.metrica-valor {
+  display: block;
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.metrica-rotulo {
+  display: block;
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  color: var(--tinta-fraca);
+  margin-top: .125rem;
+}
+
+.secao { margin-bottom: 2rem; }
+.secao-titulo {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 .75rem;
+}
+
+.linha-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0 1rem; }
+
+.lista-simulados { display: grid; gap: .625rem; }
+.item-simulado { padding: .9375rem 1.125rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.item-simulado .cresce { flex: 1; min-width: 12rem; }
+.item-titulo { font-family: var(--fonte-sans), sans-serif; font-weight: 600; font-size: .9375rem; }
+.item-meta { font-family: var(--fonte-sans), sans-serif; font-size: .8125rem; color: var(--tinta-fraca); margin-top: .1875rem; }
+
+.selo {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .125rem .4375rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.selo.aberto { color: var(--acerto); }
+.selo.fechado { color: var(--tinta-fraca); }
+.selo.automatico { color: var(--azul); }
+
+.link-aluno {
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  word-break: break-all;
+  background: var(--papel-fundo);
+  padding: .5rem .625rem;
+  border-radius: var(--raio);
+  border: 1px solid var(--linha);
+}

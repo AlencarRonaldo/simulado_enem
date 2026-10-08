@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env.local
+.env
+next-env.d.ts
+*.tsbuildinfo
+
+# Gerado pelo script de preparacao so para clonar o acervo (~106 MB).
+# data/questoes.json e public/q/ ENTRAM no Git: a Vercel serve as imagens
+# de public/q estaticamente, e sem elas as questoes aparecem sem imagem.
+/.cache-enem-api/
