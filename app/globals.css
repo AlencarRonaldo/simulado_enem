@@ -969,3 +969,84 @@ tr.total td { border-top: 1px solid var(--tinta); border-bottom: 0; font-weight:
 }
 .modal-texto strong { color: var(--tinta); font-weight: 600; }
 .modal .botao-principal { width: 100%; }
+
+/* ============================================== PLANO DE AULA (PROFESSOR) */
+
+/* Lista de questoes mais erradas por area: fio em cima, fio entre itens —
+   um indice impresso, nao uma pilha de cartoes. */
+.plano-lista { border-top: 1px solid var(--linha-forte); }
+
+.questao-plano { border-bottom: 1px solid var(--linha); }
+
+/* A linha resumida: fecha e e so escaneavel; abre e vira a questao inteira.
+   Details/summary e HTML nativo — funciona sem JavaScript, como o resto. */
+.questao-plano > summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: auto minmax(10rem, auto) 1fr auto auto;
+  gap: .25rem 1.25rem;
+  align-items: baseline;
+  padding: .9375rem 0;
+}
+.questao-plano > summary::-webkit-details-marker { display: none; }
+.questao-plano > summary::before {
+  content: '▸';
+  font-family: var(--fonte-sans), sans-serif;
+  font-size: .8125rem;
+  color: var(--tinta-fraca);
+  transition: transform .12s ease;
+}
+.questao-plano[open] > summary::before { transform: rotate(90deg); }
+.questao-plano[open] > summary { padding-bottom: .875rem; }
+
+.questao-trecho {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.questao-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.questao-dist { white-space: nowrap; font-size: .8125rem; }
+.questao-dist > span { margin-right: .625rem; }
+
+/* O corpo expandido: a questao inteira, com o mesmo tratamento da prova —
+   contexto, imagem, pergunta e alternativas do caderno. */
+.questao-corpo {
+  padding: 1rem 0 1.75rem 1.75rem;
+  border-top: 1px solid var(--linha);
+}
+
+/* Alternativa do plano: mesma forma da alternativa da prova, mas sem radio —
+   e a correta ganha o lavado do acerto, para o gabarito saltar aos olhos. */
+.plano-alternativa {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  padding: .625rem .75rem;
+  border: 1px solid transparent;
+  border-radius: var(--raio);
+  margin-bottom: .125rem;
+}
+.plano-alternativa.certa {
+  background: var(--acerto-lavado);
+  border-color: var(--acerto);
+}
+.plano-alternativa.certa .bolha {
+  background: var(--acerto);
+  border-color: var(--acerto);
+  color: #fff;
+}
+
+@media (max-width: 48rem) {
+  .questao-plano > summary {
+    grid-template-columns: auto 1fr auto;
+  }
+  .questao-trecho { grid-column: 2 / -1; grid-row: 2; }
+  .questao-dist { grid-column: 2 / -1; grid-row: 3; }
+  .questao-corpo { padding-left: 0; }
+}

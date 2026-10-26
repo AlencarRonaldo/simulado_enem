@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { estaLogado } from '@/lib/auth';
 import type { Origem } from '@/lib/metricas';
 import { Login } from './Login';
@@ -42,6 +43,7 @@ export default async function Professor({
     <main className="pagina">
       <header className="prof-cabeca">
         <h1>Painel do professor</h1>
+        <Link className="botao" href="/professor/plano">Plano de aula</Link>
         <Sair />
       </header>
 

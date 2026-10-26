@@ -1,4 +1,5 @@
 import { q } from './db';
+import type { Bloco } from './tentativa';
 
 /**
  * Metricas GERAIS, cruzando todos os simulados: o que a turma mais errou e o
@@ -186,4 +187,83 @@ export async function salasDisponiveis(f: FiltroMetricas): Promise<string[]> {
     params(f),
   );
   return r.map((x) => x.sala);
+}
+
+/** Quantas questoes mais erradas cada area leva no plano de aula. */
+export const QUESTOES_POR_AREA = 12;
+
+/**
+ * Questao do plano de aula: a metrica que ja existe (distribuicao, percentual)
+ * COM o conteudo completo, para o professor abrir a questao e planejar a aula
+ * sem precisar procurar o enunciado fora do sistema.
+ */
+export type QuestaoPlano = {
+  questao_id: string;
+  ano: number;
+  numero: number;
+  area: string;
+  idioma: string | null;
+  gabarito: string;
+  resumo_completo: string;
+  respostas: number;
+  acertos: number;
+  percentual: number | null;
+  distribuicao: Record<string, number>;
+  conteudo: Bloco[];
+  enunciado: Bloco[];
+  imagens_extra: string[];
+  alternativas: { letra: string; blocos: Bloco[]; imagem: string | null }[];
+};
+
+/**
+ * As QUESTOES_POR_AREA questoes mais erradas de CADA area do conhecimento,
+ * numa unica query: o professor de cada disciplina abre so a secao dele e
+ * sai com o material do plano de acao. Mesmo corte de MIN_RESPOSTAS das
+ * metricas — com 1 ou 2 respostas o percentual e ruido, nao sinal.
+ */
+export async function erradasPorArea(
+  f: FiltroMetricas,
+  limite = QUESTOES_POR_AREA,
+): Promise<QuestaoPlano[]> {
+  return q<QuestaoPlano>(
+    `with ${ALVO},
+     base as (
+       select qu.id as questao_id, qu.ano, qu.numero, qu.area, qu.idioma, qu.gabarito,
+              coalesce(qu.resumo, '')                           as resumo_completo,
+              qu.conteudo, qu.enunciado, qu.imagens_extra, qu.alternativas,
+              count(r.letra)::int                               as respostas,
+              count(*) filter (where r.letra = qu.gabarito)::int as acertos,
+              round(
+                100.0 * count(*) filter (where r.letra = qu.gabarito)
+                / nullif(count(r.letra), 0), 1
+              )::float as percentual,
+              jsonb_build_object(
+                'A', count(*) filter (where r.letra = 'A'),
+                'B', count(*) filter (where r.letra = 'B'),
+                'C', count(*) filter (where r.letra = 'C'),
+                'D', count(*) filter (where r.letra = 'D'),
+                'E', count(*) filter (where r.letra = 'E')
+              ) as distribuicao
+         from alvo t
+         join simulado_questoes sq on sq.simulado_id = t.simulado_id
+         join questoes qu          on qu.id = sq.questao_id
+         left join respostas r     on r.tentativa_id = t.id and r.questao_id = qu.id
+        group by qu.id
+        having count(r.letra) >= ${MIN_RESPOSTAS}
+     ),
+     ranqueadas as (
+       select *,
+              row_number() over (
+                partition by area order by percentual asc, acertos asc, ano desc
+              )::int as rn
+         from base
+     )
+     select questao_id, ano, numero, area, idioma, gabarito, resumo_completo,
+            respostas, acertos, percentual, distribuicao,
+            conteudo, enunciado, imagens_extra, alternativas
+       from ranqueadas
+      where rn <= $3
+      order by area, rn`,
+    [...params(f), limite],
+  );
 }
